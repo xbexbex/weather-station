@@ -1,8 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { AngularFireAuthModule } from 'angularfire2/auth';
+import { FormsModule } from '@angular/forms';
+import { AngularFireLite } from 'angularfire-lite';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from '../environments/environment';
 import {
@@ -11,17 +10,19 @@ import {
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
+import { ObservationPointComponent } from './components/observation-point/observation-point.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ObservationPointComponent
   ],
   imports: [
     BrowserModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFireDatabaseModule,
-    AngularFireAuthModule,
+    BrowserAnimationsModule,
+    AngularFireLite.forRoot(environment.firebase),
+    FormsModule,
     MatButtonModule,
     MatInputModule
   ],
