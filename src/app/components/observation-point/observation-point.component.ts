@@ -40,12 +40,36 @@ export class ObservationPointComponent implements OnInit {
   }
 
   fetchTemperatures(date: number) {
-    date = (date / 1000) - 86400;
+    date = date - 86400000;
+    console.log(this.parseTimeFromSeconds(date));
     this.db.query('observation-points/' + this.observationPointKey + '/readings').orderByChild('utc').startAt(date).on('value').subscribe((data) => {
       if (data != null) {
-        for (let i = 0; i < data.length; i++) {
-          console.log(data[i][0].temperature);
+        let temp = {temperature: data[0][0].temperature, time: data[0][0].time};
+        let utc = Number.parseInt(data[0][0].utc);
+        let last = 0;
+        let min = temp;
+        let max = temp;
+        for (let i = 1; i < data.length; i++) {
+          console.log(data[i][0]);
+          temp = {temperature: data[i][0].temperature, time: data[i][0].time};
+          if (Number.parseFloat(min.temperature) > Number.parseFloat(temp.temperature)) {
+            min = temp;
+          }
+          if (Number.parseFloat(max.temperature) < Number.parseFloat(temp.temperature)) {
+            max = temp;
+          }
+          if (Number.parseInt(data[i][0].utc) > utc) {
+            console.log(Number.parseInt(data[i][0].utc));
+            last = i;
+            utc = Number.parseInt(data[i][0].utc);
+          }
         }
+        this.lastTemperature = {temperature: data[last][0].temperature, time: data[last][0].time};
+        this.maxTemperature = max;
+        this.minTemperature = min;
+        console.log(this.lastTemperature.temperature);
+        console.log(this.maxTemperature.temperature);
+        console.log(this.minTemperature.temperature);
       } else {
         this.maxTemperature = {temperature: '--', time: ''};
         this.minTemperature = {temperature: '--', time: ''};
