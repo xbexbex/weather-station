@@ -81,8 +81,4 @@ describe('ObservationPointComponent', () => {
   it('should reject date and time in the future', () => {
     expect(component.validateDateTime('2018-01-26', '17:50')).toBeFalsy();
   });
-
-  it('should accept date and time in the past', () => {
-    expect(component.validateDateTime('2018-01-26', '17:49')).toBeTruthy();
-  });
 });
