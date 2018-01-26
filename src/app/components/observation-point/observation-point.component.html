@@ -3,14 +3,14 @@
       {{name}}
     </h1>
     <mat-form-field class="example-full-width">
-      <input [value]="temperatureInput" #temperatureInput type="number" matInput placeholder="New reading">
+      <input [value]="temperatureString" #temperatureInput type="number" matInput placeholder="New reading">
       <span matSuffix>C</span>
     </mat-form-field>
     <mat-form-field class="example-full-width">
-      <input [value]="timeInput" #timeInput type="time" matInput placeholder="Time">
+      <input [value]="timeString" #timeInput type="time" matInput placeholder="Time">
     </mat-form-field>
     <mat-form-field class="example-full-width">
-      <input [value]="dateInput" #dateInput type="date" matInput placeholder="Date">
+      <input [value]="dateString" #dateInput type="date" matInput placeholder="Date">
     </mat-form-field>
     <button mat-button (click)="sendTemperature(temperatureInput.value, timeInput.value, dateInput.value)">Send</button>
   </div>

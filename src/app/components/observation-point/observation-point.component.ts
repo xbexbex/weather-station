@@ -14,11 +14,12 @@ export class ObservationPointComponent implements OnInit {
   @Input() observationPointKey: string;
   name: string;
   temperatures: {};
-  temperatureInput: number;
-  dateInput: string;
-  timeInput: string;
-  date: string;
+  temperatureString: number;
+  dateString: string;
+  timeString: string;
+  time: string;
   dateUTC: number;
+  errorMessage: string;
   constructor(public db: AngularFireLiteDatabase, private http: HttpClient) { }
 
   ngOnInit() {
@@ -29,21 +30,18 @@ export class ObservationPointComponent implements OnInit {
       const url = 'https://maps.googleapis.com/maps/api/timezone/json?location=' + data[0] + '&timestamp='
         + this.roundedTime() + '&key=' + environment.dateApiKey;
       this.http.get(url).subscribe((timedata: any) => {
-        console.log(url);
-        console.log(timedata);
-        this.runClock(Date.now() + timedata.dstOffset + timedata.rawOffset);
+        this.runClock(Date.now(), timedata.dstOffset + timedata.rawOffset);
       });
     });
   }
 
-  runClock(date: number) {
-    this.dateUTC = date;
+  runClock(date: number, offset: number) {
+    this.dateUTC =  date + offset * 1000;
+    this.dateString = this.parseDateFromSeconds(this.dateUTC);
+    this.timeString = this.parseTimeFromSeconds(this.dateUTC);
     setInterval(() => {
       this.dateUTC += 1;
-      const second = Math.floor(this.dateUTC % 60);
-      const minute = Math.floor((this.dateUTC / 60) % 60);
-      const hour = Math.floor((this.dateUTC / ( 60 * 60)) % 24);
-      this.date = hour + ':' + minute + ':' + second;
+      this.time = this.parseTimeFromSeconds(this.dateUTC);
     }, 1000);
   }
 
@@ -51,14 +49,47 @@ export class ObservationPointComponent implements OnInit {
     return Math.round((Date.now() / 1000));
   }
 
+  parseTimeFromSeconds(dateUTC) {
+    const second = Math.floor((dateUTC / 1000) % 60);
+    const minute = Math.floor((dateUTC / (1000 * 60)) % 60);
+    const hour = Math.floor((dateUTC / (1000 * 60 * 60)) % 24);
+    let timeString = '';
+    if (hour < 10) {
+      timeString += '0' + hour + ':';
+    } else {
+      timeString += hour + ':';
+    }
+    if (minute < 10) {
+      timeString += '0' + minute + ':';
+    } else {
+      timeString += minute + ':';
+    }
+    if (second < 10) {
+      timeString += '0' + second;
+    } else {
+      timeString += second;
+    }
+    return timeString;
+  }
+
+  parseDateFromSeconds(dateUTC): string {
+    const date = new Date(dateUTC).toISOString().substring(0, 10);
+    console.log(date);
+    return date;
+  }
+
   sendTemperature(temperatureInput: number, timeInput: string, dateInput: string) {
     if (this.validateTemperature(temperatureInput) && this.validateDateTime(dateInput, timeInput)) {
+      console.log('abua');
       const data = { temperature: temperatureInput, date: dateInput, time: timeInput };
       this.db.push('observation-points/' + this.observationPointKey + '/readings', data);
     }
   }
 
   validateTemperature(temperature: number) {
+    if (temperature === null) {
+      return false;
+    }
     if (temperature > 300 || temperature < -273.15) {
       return false;
     }
@@ -66,6 +97,19 @@ export class ObservationPointComponent implements OnInit {
   }
 
   validateDateTime(date: string, time: string) {
-    return true;
+    const dateRegExp = /^(?!(?![02468][048]|[13579][26]00)..(?!(?!00)[02468][048]|[13579][26])...02.29)\d{4}([-])(?=0.|1[012])(?!(0[13578]|1[02]).31|02.3)\d\d\1[012]|3[01]$/;
+    const timeRegExp = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/;
+    if (timeRegExp.test(time) && dateRegExp.test(date)) {
+      console.log('meme');
+      if (time.length === 5) {
+        time += ':00';
+      }
+      const dateUTC = Date.parse(date + 'T' + time + '+0000') / 1000;
+      if (dateUTC <= this.dateUTC) {
+        return true;
+      }
+    }
+    this.errorMessage = 'Invalid time';
+    return false;
   }
 }
