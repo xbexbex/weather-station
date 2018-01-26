@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { AngularFireLiteDatabase } from 'angularfire-lite';
 import { environment } from '../../../environments/environment';
+import { Reading } from '../../constants/interfaces';
 
 @Component({
   selector: 'app-observation-point',
@@ -20,33 +21,47 @@ export class ObservationPointComponent implements OnInit {
   time: string;
   dateUTC: number;
   errorMessage: string;
+  maxTemperature: Reading;
+  minTemperature: Reading;
+  lastTemperature: Reading;
   constructor(public db: AngularFireLiteDatabase, private http: HttpClient) { }
 
   ngOnInit() {
-    this.db.read('observation-points/' + this.observationPointKey).subscribe((data) => {
-      console.log(data);
+    this.db.query('observation-points/' + this.observationPointKey).limitToFirst(4).on('value').subscribe((data) => {
       this.name = data[3]; //returns the data in a weird array format instead of proper json, hopefully to be fixed later
-      this.temperatures = data[4][0];
       const url = 'https://maps.googleapis.com/maps/api/timezone/json?location=' + data[0] + '&timestamp='
-        + this.roundedTime() + '&key=' + environment.dateApiKey;
+        + Math.round(Date.now() / 1000) + '&key=' + environment.dateApiKey;
       this.http.get(url).subscribe((timedata: any) => {
-        this.runClock(Date.now(), timedata.dstOffset + timedata.rawOffset);
+        const date = Date.now() + ((timedata.dstOffset + timedata.rawOffset) * 1000);
+        this.runClock(date);
+        this.fetchTemperatures(date);
       });
     });
   }
 
-  runClock(date: number, offset: number) {
-    this.dateUTC =  date + offset * 1000;
+  fetchTemperatures(date: number) {
+    date = (date / 1000) - 86400;
+    this.db.query('observation-points/' + this.observationPointKey + '/readings').orderByChild('utc').startAt(date).on('value').subscribe((data) => {
+      if (data != null) {
+        for (let i = 0; i < data.length; i++) {
+          console.log(data[i][0].temperature);
+        }
+      } else {
+        this.maxTemperature = {temperature: '--', time: ''};
+        this.minTemperature = {temperature: '--', time: ''};
+        this.lastTemperature = {temperature: '--', time: ''};
+      }
+    });
+  }
+
+  runClock(date: number) {
+    this.dateUTC = date;
     this.dateString = this.parseDateFromSeconds(this.dateUTC);
     this.timeString = this.parseTimeFromSeconds(this.dateUTC);
     setInterval(() => {
-      this.dateUTC += 1;
+      this.dateUTC += 1000;
       this.time = this.parseTimeFromSeconds(this.dateUTC);
     }, 1000);
-  }
-
-  roundedTime() {
-    return Math.round((Date.now() / 1000));
   }
 
   parseTimeFromSeconds(dateUTC) {
@@ -74,23 +89,29 @@ export class ObservationPointComponent implements OnInit {
 
   parseDateFromSeconds(dateUTC): string {
     const date = new Date(dateUTC).toISOString().substring(0, 10);
-    console.log(date);
     return date;
   }
 
-  sendTemperature(temperatureInput: number, timeInput: string, dateInput: string) {
+  dateTimeToSeconds(date: string, time: string): number {
+    if (time.length === 5) {
+      time += ':00';
+    }
+    return Date.parse(date + 'T' + time + '+0000');
+  }
+
+  sendTemperature(temperatureInput: string, timeInput: string, dateInput: string) {
     if (this.validateTemperature(temperatureInput) && this.validateDateTime(dateInput, timeInput)) {
-      console.log('abua');
-      const data = { temperature: temperatureInput, date: dateInput, time: timeInput };
+      const data = { temperature: temperatureInput, time: timeInput, utc: this.dateTimeToSeconds(dateInput, timeInput) };
       this.db.push('observation-points/' + this.observationPointKey + '/readings', data);
     }
   }
 
-  validateTemperature(temperature: number) {
-    if (temperature === null) {
+  validateTemperature(temperature: string) {
+    if (temperature == null) {
       return false;
     }
-    if (temperature > 300 || temperature < -273.15) {
+    const number = Number.parseFloat(temperature);
+    if (isNaN(number) || number > 300 || number < -273.15) {
       return false;
     }
     return true;
@@ -100,11 +121,7 @@ export class ObservationPointComponent implements OnInit {
     const dateRegExp = /^(?!(?![02468][048]|[13579][26]00)..(?!(?!00)[02468][048]|[13579][26])...02.29)\d{4}([-])(?=0.|1[012])(?!(0[13578]|1[02]).31|02.3)\d\d\1[012]|3[01]$/;
     const timeRegExp = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/;
     if (timeRegExp.test(time) && dateRegExp.test(date)) {
-      console.log('meme');
-      if (time.length === 5) {
-        time += ':00';
-      }
-      const dateUTC = Date.parse(date + 'T' + time + '+0000') / 1000;
+      const dateUTC = this.dateTimeToSeconds(date, time);
       if (dateUTC <= this.dateUTC) {
         return true;
       }
