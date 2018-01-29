@@ -18,3 +18,11 @@ before_script:
 - npm install -g angular-cli
 script:
 - ng test --watch=false
+deploy:
+  provider: heroku
+  api:
+    key:
+      secure: m/6ZMElVkLGXOgXp1tv5s/E7eAyurGF4Msxlih15/+laxK8+NNZ/Xr616ySVU3McLOjTFW2DqV04RHWYnLKYipuvPnDnqhlDXFkN7Ai+j7kjPzFJwRCkRWoei7yyVNwmJT1eed8C6fjOTj7t0MMGwU4NeEI+C+TKVIaXn97uIgnBMLSG9uUW5Bccjv/7pASQVvi94V9/i3MNvnCd9ZDRzhMhEh9emsRO5RvLY5jHx2kK8+zqknxjABj+vjyrWndXnEldXG5RQs2E/Y1/Ur4J2EDSQFTRmx7vLeHPuRTrT0N/VKcdFs0he1kCunQ956QmVuuuYu1qzD52wcm/RiJ0Ofy/S2x2nMzmNRHXaMWCerDFEmPpmdR/+7fqK4ECZ+B8vEw4TLoZ7bZ66LkswtVndGdiA8v9W2tvSOaopKgjypCDug52r4nJ1ZRPMsv8FCpRlmbyDUZw+AW06hWoigG/I5F3Vg9h7P0bms8NDXEgPObqEcIvXsCqzgHc+V7GNwFF8DLwkX7sZc15Fme2Fhu/qO5rUQj5lGArNu0AsRMCDLEyMnz6q1w1zQq7Ks1axPqdL3KNISp3aHnM3/zO49JbGphuHRp6YyOL7AVbgIbTSHGjvL7EdpElTn2TCF48hHrzvsy0oTmw80BP8hRCcFFW47RsN1Qm3UAlM5sURsdjBQc=
+  app: ronktor-climate
+  on: master
+
