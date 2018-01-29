@@ -7,5 +7,6 @@ export const environment = {
     projectId: 'weather-data-ronktor',
     storageBucket: 'weather-data-ronktor.appspot.com',
     messagingSenderId: '1059518516058'
-  }
+  },
+  dateApiKey: 'AIzaSyCuQX3Z9oG-vYtmKUC10njKyuStJfQ-sn4'
 };
