@@ -30,10 +30,8 @@ export class ObservationPointComponent implements OnInit {
     this.maxTemperature = { temperature: '--', time: '' };
     this.minTemperature = { temperature: '--', time: '' };
     this.lastTemperature = { temperature: '--', time: '' };
-    console.log('asdf1');
     this.db.query('observation-points/' + this.observationPointKey).limitToFirst(4).on('value').subscribe((data) => {
       if (data != null && data.length > 3) {
-        console.log('asdf2');
         this.name = data[3][0]; //returns the data in a weird array format instead of proper json, hopefully to be fixed later
         const url = 'https://maps.googleapis.com/maps/api/timezone/json?location=' + data[0][0] + '&timestamp='
           + Math.round(Date.now() / 1000) + '&key=' + environment.dateApiKey;
