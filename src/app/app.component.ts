@@ -13,6 +13,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     // fetches a list of observation points from the database
-    this.observationPoints = this.db.read('observation-points');
+    this.observationPoints = this.db.query('observation-points');
   }
 }
