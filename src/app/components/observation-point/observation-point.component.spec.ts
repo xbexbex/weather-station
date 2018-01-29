@@ -2,7 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AngularFireLite } from 'angularfire-lite';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from '../../../environments/environment';
 import {
@@ -18,17 +20,19 @@ describe('ObservationPointComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ObservationPointComponent ],
+      declarations: [ObservationPointComponent],
       imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        AngularFireLite.forRoot(environment.firebase),
         FormsModule,
         MatButtonModule,
-        MatInputModule
+        MatInputModule,
+        AngularFireLite.forRoot(environment.firebase), //to be replaced with a mock provider
+        HttpClientModule //same as above
       ],
+      schemas: [ NO_ERRORS_SCHEMA ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

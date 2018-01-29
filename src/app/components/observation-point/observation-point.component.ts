@@ -27,31 +27,36 @@ export class ObservationPointComponent implements OnInit {
   constructor(public db: AngularFireLiteDatabase, private http: HttpClient) { }
 
   ngOnInit() {
+    this.maxTemperature = { temperature: '--', time: '' };
+    this.minTemperature = { temperature: '--', time: '' };
+    this.lastTemperature = { temperature: '--', time: '' };
+    console.log('asdf1');
     this.db.query('observation-points/' + this.observationPointKey).limitToFirst(4).on('value').subscribe((data) => {
-      this.name = data[3]; //returns the data in a weird array format instead of proper json, hopefully to be fixed later
-      const url = 'https://maps.googleapis.com/maps/api/timezone/json?location=' + data[0] + '&timestamp='
-        + Math.round(Date.now() / 1000) + '&key=' + environment.dateApiKey;
-      this.http.get(url).subscribe((timedata: any) => {
-        const date = Date.now() + ((timedata.dstOffset + timedata.rawOffset) * 1000);
-        this.runClock(date);
-        this.fetchTemperatures(date);
-      });
+      if (data != null && data.length > 3) {
+        console.log('asdf2');
+        this.name = data[3][0]; //returns the data in a weird array format instead of proper json, hopefully to be fixed later
+        const url = 'https://maps.googleapis.com/maps/api/timezone/json?location=' + data[0][0] + '&timestamp='
+          + Math.round(Date.now() / 1000) + '&key=' + environment.dateApiKey;
+        this.http.get(url).subscribe((timedata: any) => {
+          const date = Date.now() + ((timedata.dstOffset + timedata.rawOffset) * 1000);
+          this.runClock(date);
+          this.fetchTemperatures(date);
+        });
+      }
     });
   }
 
   fetchTemperatures(date: number) {
     date = date - 86400000;
-    console.log(this.parseTimeFromSeconds(date));
     this.db.query('observation-points/' + this.observationPointKey + '/readings').orderByChild('utc').startAt(date).on('value').subscribe((data) => {
-      if (data != null) {
-        let temp = {temperature: data[0][0].temperature, time: data[0][0].time};
+      if (data != null && data !== undefined && data.length > 0) {
+        let temp = { temperature: data[0][0].temperature, time: data[0][0].time };
         let utc = Number.parseInt(data[0][0].utc);
         let last = 0;
         let min = temp;
         let max = temp;
         for (let i = 1; i < data.length; i++) {
-          console.log(data[i][0]);
-          temp = {temperature: data[i][0].temperature, time: data[i][0].time};
+          temp = { temperature: data[i][0].temperature, time: data[i][0].time };
           if (Number.parseFloat(min.temperature) > Number.parseFloat(temp.temperature)) {
             min = temp;
           }
@@ -59,21 +64,13 @@ export class ObservationPointComponent implements OnInit {
             max = temp;
           }
           if (Number.parseInt(data[i][0].utc) > utc) {
-            console.log(Number.parseInt(data[i][0].utc));
             last = i;
             utc = Number.parseInt(data[i][0].utc);
           }
         }
-        this.lastTemperature = {temperature: data[last][0].temperature, time: data[last][0].time};
+        this.lastTemperature = { temperature: data[last][0].temperature, time: data[last][0].time };
         this.maxTemperature = max;
         this.minTemperature = min;
-        console.log(this.lastTemperature.temperature);
-        console.log(this.maxTemperature.temperature);
-        console.log(this.minTemperature.temperature);
-      } else {
-        this.maxTemperature = {temperature: '--', time: ''};
-        this.minTemperature = {temperature: '--', time: ''};
-        this.lastTemperature = {temperature: '--', time: ''};
       }
     });
   }
