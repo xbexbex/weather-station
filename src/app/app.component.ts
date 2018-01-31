@@ -9,10 +9,16 @@ import { AngularFireLiteDatabase } from 'angularfire-lite';
 })
 export class AppComponent implements OnInit {
   observationPoints: {};
+  loading = true;
   constructor(public db: AngularFireLiteDatabase) { }
 
   ngOnInit() {
     // fetches a list of observation points from the database
-    this.observationPoints = this.db.query('observation-points');
+    this.db.query('observation-points').orderByChild('key').once('value').subscribe((data) => {
+      if (data != null && data.length !== 0) {
+        this.observationPoints = data;
+        this.loading = false;
+      }
+    });
   }
 }
