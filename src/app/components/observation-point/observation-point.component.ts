@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { AngularFireLiteDatabase } from 'angularfire-lite';
 import { Reading, ObservationPoint } from '../../constants/interfaces';
+import 'rxjs/add/observable/forkJoin';
 
 @Component({
   selector: 'app-observation-point',
@@ -37,10 +38,16 @@ export class ObservationPointComponent implements OnInit {
     this.fetchTemperatures(date);
   }
 
-  fetchTemperatures(date: number) {
-    date = date - 86400000;
-    this.db.query('readings/' + this.observationPoint.key).orderByChild('utc').startAt(date).on('value').subscribe((data) => {
-      console.log(data);
+  fetchTemperatures(date: number) { // fetches the latest temperature data for the observation point
+    date = date - 86400000; // 24 hours in milliseconds
+    const minMaxQuery = this.db.query('readings/' + this.observationPoint.key).orderByChild('utc').startAt(date).on('value');
+    const lastQuery = this.db.query('readings/' + this.observationPoint.key).orderByChild('utc').limitToLast(1).on('value');
+    this.minMaxTemperatureSubscribe(minMaxQuery);
+    this.lastTemperatureSubscribe(lastQuery);
+  }
+
+  minMaxTemperatureSubscribe(observable: Observable<any>) {
+    observable.subscribe((data) => {
       if (data != null && data !== undefined && data.length > 0) {
         let temp = { temperature: data[0][0].temperature, time: data[0][0].time };
         let utc = Number.parseInt(data[0][0].utc);
@@ -60,14 +67,21 @@ export class ObservationPointComponent implements OnInit {
             utc = Number.parseInt(data[i][0].utc);
           }
         }
-        this.lastTemperature = { temperature: data[last][0].temperature, time: data[last][0].time };
         this.maxTemperature = max;
         this.minTemperature = min;
       }
     });
   }
 
-  runClock(date: number) {
+  lastTemperatureSubscribe(observable: Observable<any>) {
+    observable.subscribe((data) => {
+      if (data != null && data !== undefined && data.length > 0) {
+        this.lastTemperature = { temperature: data[0][0].temperature, time: data[0][0].time };
+      }
+    });
+  }
+
+  runClock(date: number) { // updates the clock for the observation point every second
     this.dateUTC = date;
     this.dateString = this.parseDateFromSeconds(this.dateUTC);
     this.timeString = this.parseTimeFromSeconds(this.dateUTC);
@@ -112,8 +126,7 @@ export class ObservationPointComponent implements OnInit {
     return Date.parse(date + 'T' + time + '+0000');
   }
 
-  sendTemperature(temperatureInput: string, timeInput: string, dateInput: string) {
-    console.log(this.dateTimeToSeconds(dateInput, timeInput));
+  sendTemperature(temperatureInput: string, timeInput: string, dateInput: string) { // validates and submits the user's reading to database
     if (this.validateTemperature(temperatureInput) && this.validateDateTime(dateInput, timeInput)) {
       const data = { temperature: temperatureInput, time: timeInput, utc: this.dateTimeToSeconds(dateInput, timeInput) };
       this.db.push('readings/' + this.observationPoint.key, data);
@@ -131,7 +144,7 @@ export class ObservationPointComponent implements OnInit {
     return true;
   }
 
-  validateDateTime(date: string, time: string) {
+  validateDateTime(date: string, time: string) { // ensures that the datetime is in correct format and also not in the future
     const dateRegExp = /^(?!(?![02468][048]|[13579][26]00)..(?!(?!00)[02468][048]|[13579][26])...02.29)\d{4}([-])(?=0.|1[012])(?!(0[13578]|1[02]).31|02.3)\d\d\1[012]|3[01]$/;
     const timeRegExp = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/;
     if (timeRegExp.test(time) && dateRegExp.test(date)) {

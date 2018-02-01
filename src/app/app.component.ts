@@ -37,9 +37,7 @@ export class AppComponent implements OnInit {
           if (temporaryPoints.length % 2 === 1) {
             this.wideObservationPoint = temporaryPoints.splice(0, 1)[0];
           }
-          console.log(this.wideObservationPoint);
           this.observationPoints = temporaryPoints;
-          console.log(this.observationPoints[0]);
           this.loading = false;
         });
       }
@@ -48,7 +46,6 @@ export class AppComponent implements OnInit {
 
   sortPoints(points: ObservationPoint[]): ObservationPoint[] {
     const offset = new Date().getTimezoneOffset() * 60000;
-    console.log(offset);
     points.sort(function(a, b) {
       const aValue = Math.abs(offset - a.offset);
       const bValue = Math.abs(offset - b.offset);

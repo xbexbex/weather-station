@@ -7,8 +7,6 @@ import { environment } from '../environments/environment';
 import {
   MatButtonModule,
   MatInputModule,
-  MatDatepickerModule,
-  MatNativeDateModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
@@ -26,9 +24,7 @@ import { ObservationPointComponent } from './components/observation-point/observ
     AngularFireLite.forRoot(environment.firebase),
     FormsModule,
     MatButtonModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]
