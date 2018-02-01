@@ -1,9 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { AngularFireLiteDatabase } from 'angularfire-lite';
-import { environment } from '../../../environments/environment';
-import { Reading } from '../../constants/interfaces';
+import { Reading, ObservationPoint } from '../../constants/interfaces';
 
 @Component({
   selector: 'app-observation-point',
@@ -12,8 +10,9 @@ import { Reading } from '../../constants/interfaces';
 })
 export class ObservationPointComponent implements OnInit {
 
-  @Input() observationPointKey: string;
-  name: string;
+  @Input() observationPoint: ObservationPoint;
+  @Input() isWide = false;
+  CSSclass = 'observation-point-div';
   temperatures: {};
   temperatureString: number;
   dateString: string;
@@ -24,29 +23,24 @@ export class ObservationPointComponent implements OnInit {
   maxTemperature: Reading;
   minTemperature: Reading;
   lastTemperature: Reading;
-  constructor(public db: AngularFireLiteDatabase, private http: HttpClient) { }
+  constructor(public db: AngularFireLiteDatabase) { }
 
   ngOnInit() {
+    if (this.isWide) {
+      this.CSSclass = 'observation-point-div-wide';
+    }
     this.maxTemperature = { temperature: '--', time: '' };
     this.minTemperature = { temperature: '--', time: '' };
     this.lastTemperature = { temperature: '--', time: '' };
-    this.db.query('observation-points/' + this.observationPointKey).limitToFirst(4).on('value').subscribe((data) => {
-      if (data != null && data.length > 3) {
-        this.name = data[3][0]; //returns the data in a weird array format instead of proper json, hopefully to be fixed later
-        const url = 'https://maps.googleapis.com/maps/api/timezone/json?location=' + data[0][0] + '&timestamp='
-          + Math.round(Date.now() / 1000) + '&key=' + environment.dateApiKey;
-        this.http.get(url).subscribe((timedata: any) => {
-          const date = Date.now() + ((timedata.dstOffset + timedata.rawOffset) * 1000);
-          this.runClock(date);
-          this.fetchTemperatures(date);
-        });
-      }
-    });
+    const date = Date.now() + this.observationPoint.offset;
+    this.runClock(date);
+    this.fetchTemperatures(date);
   }
 
   fetchTemperatures(date: number) {
     date = date - 86400000;
-    this.db.query('observation-points/' + this.observationPointKey + '/readings').orderByChild('utc').startAt(date).on('value').subscribe((data) => {
+    this.db.query('readings/' + this.observationPoint.key).orderByChild('utc').startAt(date).on('value').subscribe((data) => {
+      console.log(data);
       if (data != null && data !== undefined && data.length > 0) {
         let temp = { temperature: data[0][0].temperature, time: data[0][0].time };
         let utc = Number.parseInt(data[0][0].utc);
@@ -119,9 +113,10 @@ export class ObservationPointComponent implements OnInit {
   }
 
   sendTemperature(temperatureInput: string, timeInput: string, dateInput: string) {
+    console.log(this.dateTimeToSeconds(dateInput, timeInput));
     if (this.validateTemperature(temperatureInput) && this.validateDateTime(dateInput, timeInput)) {
       const data = { temperature: temperatureInput, time: timeInput, utc: this.dateTimeToSeconds(dateInput, timeInput) };
-      this.db.push('observation-points/' + this.observationPointKey + '/readings', data);
+      this.db.push('readings/' + this.observationPoint.key, data);
     }
   }
 

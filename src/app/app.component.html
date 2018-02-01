@@ -1,5 +1,8 @@
 <div *ngIf="this.loading" class="loader"></div>
+<div *ngIf="this.wideObservationPoint">
+  <app-observation-point [observationPoint]="wideObservationPoint" [isWide]="true"></app-observation-point>
+</div>
 <!-- Lists the observation points when the request is done -->
 <div class="observation-point-div" *ngFor="let observationPoint of observationPoints">
-  <app-observation-point [observationPointKey]="observationPoint[0].key"></app-observation-point>
+  <app-observation-point [observationPoint]="observationPoint"></app-observation-point>
 </div>

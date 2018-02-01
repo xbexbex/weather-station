@@ -1,6 +1,6 @@
-<div class="observation-point-div">
+<div [ngClass]="CSSclass">
   <h1>
-    {{name}}
+    {{observationPoint.name}}
   </h1>
   <p>{{ maxTemperature.temperature }}</p>
   <p>{{ minTemperature.temperature }}</p>
