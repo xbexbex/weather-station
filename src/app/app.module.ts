@@ -7,16 +7,19 @@ import { environment } from '../environments/environment';
 import {
   MatButtonModule,
   MatInputModule,
+  MatDialogModule
 } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { ObservationPointComponent } from './components/observation-point/observation-point.component';
+import { DialogComponent } from './components/dialog/dialog.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    ObservationPointComponent
+    ObservationPointComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule,
@@ -24,9 +27,12 @@ import { ObservationPointComponent } from './components/observation-point/observ
     AngularFireLite.forRoot(environment.firebase),
     FormsModule,
     MatButtonModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DialogComponent]
 })
+
 export class AppModule { }

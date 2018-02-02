@@ -1,11 +1,16 @@
 .observation-point-div-narrow {
-  max-width: 100%;
+  width: 100%;
 }
 
 .observation-point-div {
-  margin: auto;
   overflow: hidden;
+  position: relative;
   background-color: #00000000;
+  margin-top: 2rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+  width: 26rem;
+  border: 2px solid rgb(190, 188, 188);
 }
 
 .observation-point-text-container {
@@ -20,19 +25,33 @@
 }
 
 .observation-point-background-div {
-  width: 50%;
-  height: 50%;
-  background-color: blue;
+  width: 120%;
+  height: 120%;
+  top: -40px;
+  left: -40px;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/Helsinki_Senate_Square_20170130.jpg");
+  background-position: center;
+  background-size: cover;
+  background-color: red;
   z-index: -2;
-  filter: blur(7px);
+  filter: blur(20px) grayscale(50%);
   position: absolute;
 }
 
-@media screen and (min-width: 60rem) and (orientation: landscape) {
+@media screen and (min-width: 58rem) {
   .observation-point-div-narrow {
-    max-width: 26.5rem;
+    max-width: 24rem;
   }
   .observation-point-div-wide {
-    width: 54rem;
+    width: 52.6rem;
+  }
+}
+
+@media screen and (max-width: 59rem) {
+  .observation-point-div-narrow {
+    width: 100%;
+  }
+  .observation-point-div-wide {
+    width: 100%;
   }
 }

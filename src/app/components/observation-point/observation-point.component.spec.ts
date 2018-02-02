@@ -27,10 +27,9 @@ describe('ObservationPointComponent', () => {
         FormsModule,
         MatButtonModule,
         MatInputModule,
-        AngularFireLite.forRoot(environment.firebase), //to be replaced with a mock provider
-        HttpClientModule //same as above
+        AngularFireLite.forRoot(fakeConfig), //to be replaced with a mock provider
       ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));
@@ -39,6 +38,12 @@ describe('ObservationPointComponent', () => {
     fixture = TestBed.createComponent(ObservationPointComponent);
     component = fixture.componentInstance;
     component.dateUTC = 1516988966159;
+    component.observationPoint = {
+      name: 'Test',
+      key: 'test',
+      img: 'test',
+      offset: 0
+    };
     fixture.detectChanges();
   });
 
@@ -83,6 +88,15 @@ describe('ObservationPointComponent', () => {
   });
 
   it('should reject date and time in the future', () => {
-    expect(component.validateDateTime('2018-01-26', '17:50')).toBeFalsy();
+    expect(component.validateDateTime('3025-01-26', '17:50')).toBeFalsy();
   });
 });
+
+const fakeConfig = {
+  apiKey: 'fake',
+  authDomain: 'fake.firebaseapp.com',
+  databaseURL: 'https://fake.firebaseio.com',
+  projectId: 'fake',
+  storageBucket: 'fake.appspot.com',
+  messagingSenderId: '1059518516058'
+};
