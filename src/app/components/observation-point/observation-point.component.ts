@@ -13,7 +13,7 @@ export class ObservationPointComponent implements OnInit {
 
   @Input() observationPoint: ObservationPoint;
   @Input() isWide = false;
-  CSSclass = 'observation-point-div';
+  CSSclass = 'observation-point-div-narrow';
   temperatures: {};
   temperatureString: number;
   dateString: string;

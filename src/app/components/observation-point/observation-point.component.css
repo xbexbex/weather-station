@@ -1,7 +1,38 @@
+.observation-point-div-narrow {
+  max-width: 100%;
+}
+
 .observation-point-div {
-    background-color: black;
+  margin: auto;
+  overflow: hidden;
+  background-color: #00000000;
+}
+
+.observation-point-text-container {
+    margin: auto;
+    text-align: center;
+    z-index: -1;
+    background-color: #00000000;
 }
 
 .observation-point-div-wide {
-    background-color: white;
+  max-width: 100%;
+}
+
+.observation-point-background-div {
+  width: 50%;
+  height: 50%;
+  background-color: blue;
+  z-index: -2;
+  filter: blur(7px);
+  position: absolute;
+}
+
+@media screen and (min-width: 60rem) and (orientation: landscape) {
+  .observation-point-div-narrow {
+    max-width: 26.5rem;
+  }
+  .observation-point-div-wide {
+    width: 54rem;
+  }
 }
