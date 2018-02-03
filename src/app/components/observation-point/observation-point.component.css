@@ -38,20 +38,31 @@
   position: absolute;
 }
 
-@media screen and (min-width: 58rem) {
+@media screen and (min-width: 937px) {
   .observation-point-div-narrow {
-    max-width: 24rem;
+    max-width: 26rem;
   }
   .observation-point-div-wide {
-    width: 52.6rem;
+    width: 54.6rem;
   }
 }
 
-@media screen and (max-width: 59rem) {
+@media screen and (max-width: 936px) {
   .observation-point-div-narrow {
-    width: 100%;
+    width: 95%;
   }
   .observation-point-div-wide {
-    width: 100%;
+    width: 95%;
+  }
+  .observation-point-div {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}
+
+@media screen and (max-width: 40rem) {
+  .observation-point-div {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
