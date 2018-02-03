@@ -4,3 +4,29 @@ input::-webkit-clear-button { /* Removes blue cross */
   -webkit-appearance: none;
   margin: 0;
 }
+
+.dialog-title {
+    text-align: center;
+}
+
+.dialog-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.dialog-button-div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.dialog-input {
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.dialog-error {
+    text-align: center;
+}

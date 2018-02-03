@@ -126,7 +126,7 @@ export class ObservationPointComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DialogComponent, {
-      width: '250px',
+      width: '350px',
       data: {
         nameString: this.observationPoint.name,
         dateString: this.dateString,
