@@ -7,6 +7,9 @@ input::-webkit-clear-button { /* Removes blue cross */
 
 .dialog-title {
     text-align: center;
+    font-family: 'Permanent Marker', cursive;
+    color: rgba(39, 39, 39, 0.808);
+    font-size: 2rem;
 }
 
 .dialog-div {
@@ -27,6 +30,28 @@ input::-webkit-clear-button { /* Removes blue cross */
     margin-bottom: 2rem;
 }
 
+.mat-button {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem;
+}
+
+.mat-error {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem;
+}
+
+.mat-form-field {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem;
+}
+
 .dialog-error {
     text-align: center;
+}
+
+.dialog-success {
+    text-align: center;
+    font-size: 2rem;
+    font-family: 'Rajdhani', sans-serif;
+    color: rgb(0, 117, 20);
 }

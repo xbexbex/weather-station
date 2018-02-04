@@ -1,13 +1,32 @@
 <div [ngClass]="CSSclass" class="observation-point-div">
-  <div class="observation-point-background-div">
+  <div class="observation-point-background-div" [ngStyle]="{'background-image': observationPoint.img}">
   </div>
   <div class="observation-point-text-container">
-    <h1>
-      {{observationPoint.name}}
-    </h1>
-    <p>{{ maxTemperature.temperature }}</p>
-    <p>{{ minTemperature.temperature }}</p>
-    <p>{{ lastTemperature.temperature }}</p>
-    <button mat-button (click)="openDialog()">Open</button>
+    <div class="observation-point-title-div">
+      <h1 class="observation-point-title">
+        {{observationPoint.name}}
+      </h1>
+      <h1 class="observation-point-time">
+        {{timeWithoutSeconds}}
+      </h1>
+    </div>
+    <div class="observation-point-readings-div">
+      <div class="observation-point-readings-titles-div">
+        <p>Current</p>
+        <p>Max (last 24H)</p>
+        <p>Min (last 24H) </p>
+      </div>
+      <div class="observation-point-readings-values-div">
+        <p>{{ lastTemperature.temperature }} &#8451;</p>
+        <p>{{ maxTemperature.temperature }} &#8451;</p>
+        <p>{{ minTemperature.temperature }} &#8451;</p>
+      </div>
+      <div class="observation-point-readings-time-div">
+        <p *ngIf="this.lastTemperature">{{ lastTemperature.time }}</p>
+        <p *ngIf="this.maxTemperature">{{ maxTemperature.time }}</p>
+        <p *ngIf="this.minTemperature.time">{{ minTemperature.time }}</p>
+      </div>
+    </div>
+    <button mat-button class="dialog-open-button" (click)="openDialog()">Add</button>
   </div>
 </div>

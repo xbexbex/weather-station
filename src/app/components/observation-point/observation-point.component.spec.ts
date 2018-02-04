@@ -50,46 +50,6 @@ describe('ObservationPointComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should accept valid date and valid time', () => {
-    expect(component.validateDateTime('2017-12-12', '15:15')).toBeTruthy();
-  });
-
-  it('should reject valid date and invalid time', () => {
-    expect(component.validateDateTime('2017-12-12', '15')).toBeFalsy();
-  });
-
-  it('should reject valid date and invalid time', () => {
-    expect(component.validateDateTime('2017-12-12', '25:60')).toBeFalsy();
-  });
-
-  it('should reject valid date and invalid time', () => {
-    expect(component.validateDateTime('2017-12-12', 'asdfg')).toBeFalsy();
-  });
-
-  it('should reject invalid date and valid time', () => {
-    expect(component.validateDateTime('2000-13-32', '15:15')).toBeFalsy();
-  });
-
-  it('should reject invalid date and valid time', () => {
-    expect(component.validateDateTime('asdfg', '15:15')).toBeFalsy();
-  });
-
-  it('should reject empty date and time', () => {
-    expect(component.validateDateTime('', '')).toBeFalsy();
-  });
-
-  it('should reject empty date and valid time', () => {
-    expect(component.validateDateTime('', '15:00')).toBeFalsy();
-  });
-
-  it('should reject valid date and empty time', () => {
-    expect(component.validateDateTime('2017-12-12', '')).toBeFalsy();
-  });
-
-  it('should reject date and time in the future', () => {
-    expect(component.validateDateTime('3025-01-26', '17:50')).toBeFalsy();
-  });
 });
 
 const fakeConfig = {

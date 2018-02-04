@@ -1,2 +1,28 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/prebuilt-themes/deeppurple-amber.css'
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+body {
+    background-image: url('./assets/img/ep_naturalwhite.png');
+}
+
+html {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+}
+
+.mat-dialog-container {
+    background-image: url('./assets/img/ep_naturalwhite.png');
+    box-shadow: 20px 20px 5px grey;
+}
+
+@media screen and (max-width: 500px) {
+    html {
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    html {
+        font-size: 10px;
+    }
+}

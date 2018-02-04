@@ -26,6 +26,8 @@ export class DialogComponent implements OnInit {
   timeError: string;
   dateError: string;
 
+  sendButtonDisabled: boolean;
+
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
     public db: AngularFireLiteDatabase,
@@ -35,6 +37,7 @@ export class DialogComponent implements OnInit {
     this.temperatureControl = new FormControl();
     this.timeControl = new FormControl();
     this.dateControl = new FormControl();
+    this.sendButtonDisabled = true;
 
     this.dateRegExp = /^(?!(?![02468][048]|[13579][26]00)..(?!(?!00)[02468][048]|[13579][26])...02.29)\d{4}([-])(?=0.|1[012])(?!(0[13578]|1[02]).31|02.3)\d\d\1[012]|3[01]$/;
     this.timeRegExp = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/;
@@ -65,6 +68,7 @@ export class DialogComponent implements OnInit {
       this.timeError = this.validateTime(data);
       if (this.timeError) {
         this.timeControl.setErrors({});
+        this.sendButtonDisabled = true;
       } else {
         this.timeControl.setErrors(null);
       }

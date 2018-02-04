@@ -3,7 +3,83 @@
 }
 
 .dialog-open-button {
+  font-size: 2rem;
+  text-align: right;
+  font-family: 'Permanent Marker', cursive !important;
+  color: rgba(39, 39, 39, 0.808);
+  padding-bottom: 0.5rem;
+}
 
+.observation-point-readings-div {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: bold;
+  font-family: 'Rajdhani', sans-serif;
+  color: rgba(39, 39, 39, 0.808);
+  text-shadow: 0px 0px 25px rgba(255, 255, 255, 0.801);
+  border-bottom: 3px solid rgba(58, 58, 58, 0.76);
+  padding-bottom: 1rem;
+
+}
+
+.observation-point-readings-titles-div {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding-left: 1rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.2rem;
+  line-height: 1rem;
+}
+
+.observation-point-readings-values-div {
+  width: 35%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font-size: 1.7rem;
+  margin: auto;
+  line-height: 0;
+  text-align: left;
+  word-wrap: nowrap;
+  font-family: 'Permanent Marker', cursive;
+}
+
+.observation-point-readings-time-div {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  text-align: right;
+  padding-right: 1rem;
+  font-size: 1.1rem;
+  line-height: 1rem;
+}
+
+.observation-point-title-div {
+  display:flex;
+  flex-flow: row wrap;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  justify-content: space-between;
+  border-bottom: 3px solid rgba(58, 58, 58, 0.76);
+}
+
+.observation-point-title {
+  font-size: 2.5rem;
+  line-height: 1rem;
+  color: rgba(39, 39, 39, 0.808);
+  font-family: 'Permanent Marker', cursive;
+}
+
+.observation-point-time {
+  font-size: 1.8rem;
+  line-height: 2.5rem;
+  color: rgba(39, 39, 39, 0.808);
+  font-family: 'Rajdhani', sans-serif;
 }
 
 .observation-point-div {
@@ -14,7 +90,7 @@
   margin-right: 1rem;
   margin-left: 1rem;
   width: 26rem;
-  border: 2px solid rgb(190, 188, 188);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .observation-point-text-container {
@@ -36,12 +112,12 @@
   height: 120%;
   top: -40px;
   left: -40px;
-  background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/Helsinki_Senate_Square_20170130.jpg");
+  background-image: url("../../../assets/img/new_york.jpg");
   background-position: center;
   background-size: cover;
-  background-color: red;
+  background-color: rgb(158, 158, 158);
   z-index: -2;
-  filter: blur(20px) grayscale(50%);
+  filter: blur(10px) saturate(200%) grayscale(70%);
   position: absolute;
 }
 
@@ -67,9 +143,21 @@
   }
 }
 
-@media screen and (max-width: 40rem) {
+@media screen and (max-width: 500px) {
   .observation-point-div {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .observation-point-title-div {
+    display:flex;
+    flex-flow: column;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    justify-content: center;
+  }
+
+  .observation-point-title-div > * {
+    line-height: 0;
   }
 }

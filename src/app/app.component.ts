@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
         const observables = this.fetchTimes(data);
         Observable.forkJoin(observables).subscribe((timedata) => { // waits for all the observables to return
           for (let i = 0; i < timedata.length; i++) {
-            const offset = (timedata[i].dstOffset + timedata[i].rawOffset) * -1000;
+            const offset = (timedata[i].dstOffset + timedata[i].rawOffset) * 1000;
             const temporaryPoint = {
               name: data[i][0].name,
               key: data[i][0].key,
@@ -47,8 +47,8 @@ export class AppComponent implements OnInit {
   sortPoints(points: ObservationPoint[]): ObservationPoint[] {
     const offset = new Date().getTimezoneOffset() * 60000;
     points.sort(function (a, b) {
-      const aValue = Math.abs(offset - a.offset);
-      const bValue = Math.abs(offset - b.offset);
+      const aValue = Math.abs(offset - (a.offset * -1));
+      const bValue = Math.abs(offset - (b.offset * -1));
       if (aValue <= bValue) {
         return -1;
       }
