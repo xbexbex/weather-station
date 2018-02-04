@@ -1,4 +1,6 @@
-<div *ngIf="this.loading" class="loader"></div>
+<div *ngIf="this.loading" class="loader-div">
+  <div class="loader"></div>
+</div>
 <div class="observation-point-container">
   <div *ngIf="this.wideObservationPoint">
     <app-observation-point [observationPoint]="wideObservationPoint" [isWide]="true"></app-observation-point>
