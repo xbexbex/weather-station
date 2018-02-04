@@ -7,8 +7,8 @@ describe('weather-station App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should show an observation point', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('');
+    expect(page.getParagraphText()).toEqual('Max (last 24h)');
   });
 });

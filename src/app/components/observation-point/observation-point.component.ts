@@ -59,7 +59,7 @@ export class ObservationPointComponent implements OnInit {
         let last = 0;
         let min = temp;
         let max = temp;
-        for (let i = 1; i < data.length; i++) {
+        for (let i = 1; i < data.length; i++) { // loops through the array and finds the min and max temperatures
           temp = { temperature: data[i][0].temperature, time: data[i][0].time };
           if (Number.parseFloat(min.temperature) > Number.parseFloat(temp.temperature)) {
             min = temp;
@@ -87,7 +87,7 @@ export class ObservationPointComponent implements OnInit {
     observable.subscribe((data) => {
       if (data != null && data !== undefined && data.length > 0) {
         const temperature = this.truncateTemperature(data[0][0].temperature);
-        if (this.dateUTC - 86400000 > data[0][0].utc) {
+        if (this.dateUTC - 86400000 > data[0][0].utc) { // the big number is one day in milliseconds
           this.lastTemperature = { temperature, time: this.parseDateFromSeconds(data[0][0].utc)};
         } else {
           this.lastTemperature = { temperature, time: data[0][0].time};
