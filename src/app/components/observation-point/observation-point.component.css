@@ -5,7 +5,7 @@
 .dialog-open-button {
   font-size: 2rem;
   text-align: right;
-  font-family: 'Permanent Marker', cursive !important;
+  font-family: 'Permanent Marker', cursive;
   color: rgba(39, 39, 39, 0.808);
   padding-bottom: 0.5rem;
 }
