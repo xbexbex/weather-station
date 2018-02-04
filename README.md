@@ -20,3 +20,4 @@ Requires Node.js and Angular 5 cli
 ### Notes
 * If the app doesn't work, it's probably due to the TimeZone API and Firebase running out of juice. Please wait a day or contact me.
 * The date/time management and data pulling/updating should definitely be handled server side, and only then passed to the client. Same with sending data from client to the database. Sadly, I don't have time to implement a proper backend REST Api server right now.
+* The app has not been tested on high resolution displays, only on 1080p. Probably looks quite small on higher resolutions.
