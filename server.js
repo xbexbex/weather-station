@@ -14,5 +14,5 @@ app.set('port', port);
 const server = http.createServer(app);
 
 server.listen(port, '0.0.0.0', function() {
-  console.log("Running on port " + port);
+  console.log("The app is running on port " + port);
 });
