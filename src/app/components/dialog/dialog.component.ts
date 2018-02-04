@@ -35,7 +35,8 @@ export class DialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
     public db: AngularFireLiteDatabase,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) { }
 
   ngOnInit(): void {
     this.temperatureControl = new FormControl();
@@ -94,7 +95,7 @@ export class DialogComponent implements OnInit {
     });
   }
 
-  checkErrors(): void {
+  checkErrors(): void { // disables the send button if errors are found, enables it if not
     if (this.dateControl.errors === null
       && this.temperatureControl.errors === null
       && this.timeControl.errors === null) {
@@ -108,7 +109,7 @@ export class DialogComponent implements OnInit {
     if (time.length === 5) {
       time += ':00';
     }
-    return Date.parse(date + 'T' + time + '+0000');
+    return Date.parse(date + 'T' + time + '+0000'); // parses the date with no timezone
   }
 
   sendTemperature(temperatureInput: string, timeInput: string, dateInput: string): void { // validates and submits the user's reading to database
@@ -130,7 +131,7 @@ export class DialogComponent implements OnInit {
     }
   }
 
-  validateTemperature(temperature: string): string {
+  validateTemperature(temperature: string): string { // returns an error message, null if no error
     if (temperature == null) {
       return 'Required';
     }
@@ -147,14 +148,14 @@ export class DialogComponent implements OnInit {
     return null;
   }
 
-  validateDate(date: string): string {
+  validateDate(date: string): string { // returns an error message, null if no error
     if (this.dateRegExp.test(date)) {
       return null;
     }
     return 'Invalid format. Example: "12-Jun-2017"';
   }
 
-  validateTime(time: string): string {
+  validateTime(time: string): string { // returns an error message, null if no error
     if (this.timeRegExp.test(time)) {
       return null;
     }
@@ -167,7 +168,6 @@ export class DialogComponent implements OnInit {
     if (dateUTC <= currentDateUTC) {
       return true;
     }
-    this.errorMessage = 'Invalid time';
     return false;
   }
 }
