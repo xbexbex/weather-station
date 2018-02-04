@@ -2,22 +2,22 @@
   <h3 class="dialog-title">{{data.nameString}}</h3>
   <form>
     <mat-form-field class="dialog-input">
-      <input #temperatureInput matInput type="number" placeholder="New reading" [formControl]="temperatureControl">
+      <input matInput [value]="temperature" #temperatureInput type="number" placeholder="New reading" [formControl]="temperatureControl">
       <mat-error *ngIf="true">{{ temperatureError }}</mat-error>
     </mat-form-field>
     <mat-form-field class="dialog-input">
-      <input matInput [value]="data.timeString" #timeInput type="time" matInput placeholder="Time">
+      <input matInput [value]="data.timeString" #timeInput type="time" matInput placeholder="Time" [formControl]="timeControl">
       <mat-error *ngIf="timeError">{{ timeError }}</mat-error>
     </mat-form-field>
     <mat-form-field class="dialog-input">
-      <input matInput [value]="data.dateString" #dateInput type="date" matInput placeholder="Date">
+      <input matInput [value]="data.dateString" #dateInput type="date" matInput placeholder="Date" [formControl]="dateControl">
       <mat-error *ngIf="dateError">{{ dateError }}</mat-error>
     </mat-form-field>
     <div class="dialog-button-div">
       <button mat-button (click)="onNoClick()">Close</button>
-      <button mat-button (click)="sendTemperature(temperatureInput.value, timeInput.value, dateInput.value)">Send</button>
+      <button mat-button (keydown.enter)="sendTemperature(temperatureInput.value, timeInput.value, dateInput.value)" [disabled]="sendButtonDisabled" (click)="sendTemperature(temperatureInput.value, timeInput.value, dateInput.value)">Send</button>
     </div>
   </form>
-  <mat-error class="dialog-error">{{ temperatureError }}</mat-error>
-  <p *ngIf="temperatureSuccess" class="dialog-success">{{ temperatureSuccess }}</p>
+  <mat-error class="dialog-error">{{ errorMessage }}</mat-error>
+  <p *ngIf="successMessage" class="dialog-success">{{ successMessage }}</p>
 </div>

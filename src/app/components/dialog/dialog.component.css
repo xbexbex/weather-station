@@ -45,13 +45,20 @@ input::-webkit-clear-button { /* Removes blue cross */
     font-size: 1.5rem;
 }
 
+.mat-button {
+    padding: 1rem;
+}
+
 .dialog-error {
     text-align: center;
+    font-style: italic;
+    font-size: 1.8rem;
 }
 
 .dialog-success {
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-family: 'Rajdhani', sans-serif;
     color: rgb(0, 117, 20);
+    font-style: italic;
 }

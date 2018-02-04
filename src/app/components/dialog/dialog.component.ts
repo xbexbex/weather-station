@@ -7,6 +7,8 @@ import {
   MAT_DIALOG_DATA
 } from '@angular/material';
 
+// this is the dialog component for adding new readings for observation points
+
 @Component({
   selector: 'app-dialog',
   templateUrl: './dialog.component.html',
@@ -15,6 +17,9 @@ import {
 export class DialogComponent implements OnInit {
 
   errorMessage: string;
+  successMessage: string;
+  sendButtonDisabled: boolean;
+
   temperatureRegExp: RegExp;
   timeRegExp: RegExp;
   dateRegExp: RegExp;
@@ -25,8 +30,7 @@ export class DialogComponent implements OnInit {
   temperatureError: string;
   timeError: string;
   dateError: string;
-
-  sendButtonDisabled: boolean;
+  temperature: number;
 
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
@@ -38,6 +42,7 @@ export class DialogComponent implements OnInit {
     this.timeControl = new FormControl();
     this.dateControl = new FormControl();
     this.sendButtonDisabled = true;
+    this.temperature = null;
 
     this.dateRegExp = /^(?!(?![02468][048]|[13579][26]00)..(?!(?!00)[02468][048]|[13579][26])...02.29)\d{4}([-])(?=0.|1[012])(?!(0[13578]|1[02]).31|02.3)\d\d\1[012]|3[01]$/;
     this.timeRegExp = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?$/;
@@ -48,11 +53,11 @@ export class DialogComponent implements OnInit {
     this.dateControlSubscribe();
   }
 
-  onNoClick(): void {
+  onNoClick(): void { // clicking outside the dialog will trigger this
     this.dialogRef.close();
   }
 
-  temperatureControlSubscribe(): void {
+  temperatureControlSubscribe(): void { // for validating the temperature input in real time
     this.temperatureControl.valueChanges.subscribe((data) => {
       this.temperatureError = this.validateTemperature(data);
       if (this.temperatureError) {
@@ -60,10 +65,11 @@ export class DialogComponent implements OnInit {
       } else {
         this.temperatureControl.setErrors(null);
       }
+      this.checkErrors();
     });
   }
 
-  timeControlSubscribe(): void {
+  timeControlSubscribe(): void { // for validating the time input in real time
     this.timeControl.valueChanges.subscribe((data) => {
       this.timeError = this.validateTime(data);
       if (this.timeError) {
@@ -72,10 +78,11 @@ export class DialogComponent implements OnInit {
       } else {
         this.timeControl.setErrors(null);
       }
+      this.checkErrors();
     });
   }
 
-  dateControlSubscribe(): void {
+  dateControlSubscribe(): void { // for validating the date input in real time
     this.dateControl.valueChanges.subscribe((data) => {
       this.dateError = this.validateDate(data);
       if (this.temperatureError) {
@@ -83,7 +90,18 @@ export class DialogComponent implements OnInit {
       } else {
         this.temperatureControl.setErrors(null);
       }
+      this.checkErrors();
     });
+  }
+
+  checkErrors(): void {
+    if (this.dateControl.errors === null
+      && this.temperatureControl.errors === null
+      && this.timeControl.errors === null) {
+      this.sendButtonDisabled = false;
+    } else {
+      this.sendButtonDisabled = true;
+    }
   }
 
   dateTimeToSeconds(date: string, time: string): number {
@@ -94,12 +112,21 @@ export class DialogComponent implements OnInit {
   }
 
   sendTemperature(temperatureInput: string, timeInput: string, dateInput: string): void { // validates and submits the user's reading to database
-  if (this.validateTemperature(temperatureInput) === null
+    this.successMessage = null;
+    this.errorMessage = null;
+    if (this.validateTemperature(temperatureInput) === null
       && this.validateDate(dateInput) === null
-      && this.validateTime(timeInput) === null
-      && this.validateDateTime(dateInput, timeInput)) {
-      const data = { temperature: temperatureInput, time: timeInput, utc: this.dateTimeToSeconds(dateInput, timeInput) };
-      this.db.push('readings/' + this.data.key, data);
+      && this.validateTime(timeInput) === null) {
+      if (this.validateDateTime(dateInput, timeInput)) {
+        const data = { temperature: temperatureInput, time: timeInput, utc: this.dateTimeToSeconds(dateInput, timeInput) };
+        this.db.push('readings/' + this.data.key, data);
+        this.successMessage = 'Reading sent!';
+        this.temperature = undefined;
+      } else {
+        this.errorMessage = 'Time traveling currently not supported';
+      }
+    } else {
+      this.errorMessage = 'Invalid inputs';
     }
   }
 
