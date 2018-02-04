@@ -16,3 +16,7 @@ Requires Node.js and Angular 5 cli
 
 ### [Backlog](https://drive.google.com/open?id=1lf47xMEdL9T8V0hXzzxKOTFNmChlsY8DoHDLTCvpw5M)
 ### [Technical Backlog](https://drive.google.com/open?id=1ynEe2CoCYZLyLe_8HL_SYhflLVAZy0O4MluZNqhv7i0)
+
+### Notes
+* If the app doesn't work, it's probably due to the TimeZone API and Firebase running out of juice. Please wait a day or contact me.
+* The date/time management and data pulling/updating should definitely be handled server side, and only then passed to the client. Same with sending data from client to the database. Sadly, I don't have time to implement a proper backend REST Api server right now.
