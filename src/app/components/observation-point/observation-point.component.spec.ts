@@ -4,13 +4,18 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AngularFireLite } from 'angularfire-lite';
-import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { environment } from '../../../environments/environment';
 import {
   MatButtonModule,
   MatInputModule
 } from '@angular/material';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+  MatDialogModule
+} from '@angular/material/dialog';
 
 import { ObservationPointComponent } from './observation-point.component';
 
@@ -27,7 +32,12 @@ describe('ObservationPointComponent', () => {
         FormsModule,
         MatButtonModule,
         MatInputModule,
+        MatDialogModule,
         AngularFireLite.forRoot(fakeConfig), //to be replaced with a mock provider
+      ],
+      providers: [
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        {provide: MatDialogRef, useValue: {}},
       ],
       schemas: [NO_ERRORS_SCHEMA]
     })
