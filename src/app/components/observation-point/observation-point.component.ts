@@ -25,10 +25,12 @@ export class ObservationPointComponent implements OnInit {
   timeString: string;
   timeWithoutSeconds: string;
   dateUTC: number;
+  refreshTimer: number;
   errorMessage: string;
   maxTemperature: Reading;
   minTemperature: Reading;
   lastTemperature: Reading;
+  minMaxTemperatures: string[];
   constructor(public db: AngularFireLiteDatabase, public dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -53,34 +55,49 @@ export class ObservationPointComponent implements OnInit {
 
   minMaxTemperatureSubscribe(observable: Observable<any>): void { // updates the observation point's min and max temperature
     observable.subscribe((data) => {
-      if (data != null && data !== undefined && data.length > 0) {
-        let temp = { temperature: data[0][0].temperature, time: data[0][0].time };
-        let utc = Number.parseInt(data[0][0].utc);
-        let last = 0;
-        let min = temp;
-        let max = temp;
-        for (let i = 1; i < data.length; i++) { // loops through the array and finds the min and max temperatures
-          temp = { temperature: data[i][0].temperature, time: data[i][0].time };
-          if (Number.parseFloat(min.temperature) > Number.parseFloat(temp.temperature)) {
+      this.minMaxTemperatures = data;
+      this.setMinAndMaxTemperature(this.minMaxTemperatures);
+    });
+  }
+
+  setMinAndMaxTemperature(data): void {
+    let temp = { temperature: '-', time: null };
+    let min = temp;
+    let max = temp;
+    let db = -1;
+    if (data != null && data !== undefined && data.length > 0) {
+      for (let i = 0; i < data.length; i++) { // loops through the array and finds the min and max temperatures
+        if (Date.now() + this.observationPoint.offset - 86400000 < data[i][0].utc) {
+          if (temp.time === null) {
+            temp = { temperature: data[i][0].temperature, time: data[i][0].time };
             min = temp;
-          }
-          if (Number.parseFloat(max.temperature) < Number.parseFloat(temp.temperature)) {
             max = temp;
-          }
-          if (Number.parseInt(data[i][0].utc) > utc) {
-            last = i;
-            utc = Number.parseInt(data[i][0].utc);
+          } else {
+            temp = { temperature: data[i][0].temperature, time: data[i][0].time };
+            if (Number.parseFloat(min.temperature) > Number.parseFloat(temp.temperature)) {
+              min = temp;
+              db = i;
+            }
+            if (Number.parseFloat(max.temperature) < Number.parseFloat(temp.temperature)) {
+              max = temp;
+            }
           }
         }
+      }
+      console.log(this.observationPoint.name);
+      console.log(min.temperature);
+      console.log(Date.now() + this.observationPoint.offset - 86400000);
+      if (db > -1) {
+        console.log(data[db][0].utc);
+        console.log(Date.now() + this.observationPoint.offset - 86400000 < data[db][0].utc);
+      }
+      if (temp.time !== null) {
         max.temperature = this.truncateTemperature(max.temperature);
         min.temperature = this.truncateTemperature(min.temperature);
-        this.maxTemperature = max;
-        this.minTemperature = min;
-      } else {
-        this.maxTemperature = { temperature: '-', time: '' };
-        this.minTemperature = { temperature: '-', time: '' };
       }
-    });
+    }
+    this.maxTemperature = max;
+    this.minTemperature = min;
   }
 
   lastTemperatureSubscribe(observable: Observable<any>): void { // updates the observation point's latest temperature
@@ -88,9 +105,9 @@ export class ObservationPointComponent implements OnInit {
       if (data != null && data !== undefined && data.length > 0) {
         const temperature = this.truncateTemperature(data[0][0].temperature);
         if (this.dateUTC - 86400000 > data[0][0].utc) { // the big number is one day in milliseconds
-          this.lastTemperature = { temperature, time: this.parseDateFromSeconds(data[0][0].utc)};
+          this.lastTemperature = { temperature, time: this.parseDateFromSeconds(data[0][0].utc) };
         } else {
-          this.lastTemperature = { temperature, time: data[0][0].time};
+          this.lastTemperature = { temperature, time: data[0][0].time };
         }
       } else {
         this.lastTemperature = { temperature: '-', time: '' };
@@ -100,14 +117,20 @@ export class ObservationPointComponent implements OnInit {
 
   runClock(date: number): void { // updates the clock for the observation point every second
     this.dateUTC = date;
+    this.refreshTimer = 0;
     this.dateString = this.parseDateFromSeconds(this.dateUTC);
     this.timeString = this.parseTimeFromSeconds(this.dateUTC);
     this.timeWithoutSeconds = this.timeString.substr(0, 5);
     setInterval(() => {
       this.dateUTC += 1000;
+      this.refreshTimer ++;
       this.dateString = this.parseDateFromSeconds(this.dateUTC);
       this.timeString = this.parseTimeFromSeconds(this.dateUTC);
       this.timeWithoutSeconds = this.timeString.substr(0, 5);
+      if (this.refreshTimer === 60) { // refreshes the min and max temperatures every minute
+        this.setMinAndMaxTemperature(this.minMaxTemperatures);
+        this.refreshTimer = 0;
+      }
     }, 1000);
   }
 
@@ -154,7 +177,8 @@ export class ObservationPointComponent implements OnInit {
         dateString: this.dateString,
         timeString: this.timeString,
         key: this.observationPoint.key,
-        offset: this.observationPoint.offset }
+        offset: this.observationPoint.offset
+      }
     });
   }
 }
