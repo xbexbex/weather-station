@@ -1,3 +1,5 @@
+## Warning: Not maintained and the database has been disconnected
+
 # weather-station
 [![Heroku](https://heroku-badge.herokuapp.com/?app=ronktor-climate&style=flat)](https://ronktor-climate.herokuapp.com)
 [![Build Status](https://travis-ci.org/xbexbex/weather-station.svg?branch=master)](https://travis-ci.org/xbexbex/weather-station)
